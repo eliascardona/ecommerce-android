@@ -1,4 +1,4 @@
-package com.eliascardona.ecommerce.components.domain.product
+package com.eliascardona.ecommerce.components.features.product
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,13 +26,17 @@ fun ProductCard(
     product: ProductItemForCard,
     onProductItemClick: () -> Unit
 ) {
+
     Box(
         modifier = Modifier
             .width(180.dp)
             .height(220.dp)
-            .clickable(true, null, null, onProductItemClick)
+            .clickable {
+                onProductItemClick()
+            }
     ) {
-        _root_ide_package_.com.eliascardona.ecommerce.components.shared.card.GenericCard {
+
+        GenericCard {
             ProductCardContent(product)
         }
     }
@@ -42,17 +46,20 @@ fun ProductCard(
 fun ProductCardContent(
     product: ProductItemForCard
 ) {
+
     Column(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
+
         horizontalAlignment = Alignment.CenterHorizontally,
+
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
         Image(
             painter = painterResource(id = product.productImage),
-            contentDescription = "Product image for ${product.productName}",
+            contentDescription = product.productName,
             modifier = Modifier.size(100.dp)
         )
 
@@ -65,7 +72,7 @@ fun ProductCardContent(
         )
 
         Text(
-            text = "$ 99.99",
+            text = "$ ${product.productPrice}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
