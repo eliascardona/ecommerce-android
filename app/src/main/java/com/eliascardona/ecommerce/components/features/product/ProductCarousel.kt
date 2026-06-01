@@ -9,13 +9,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.eliascardona.ecommerce.infrastructure.data.ProductItemForCard
+import com.eliascardona.ecommerce.infrastructure.data.ProductEntity
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
 import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 
 @Composable
 fun ProductCardCarousel(
-    products: List<ProductItemForCard>,
+    products: List<ProductEntity>,
     onNavigateToProductDetails: () -> Unit
 ) {
 
@@ -40,7 +40,8 @@ fun ProductCardCarousel(
                             name = product.productName,
                             unitPrice = product.productPrice,
                             quantity = 1,
-                            imageRes = product.productImage
+                            imageRes = product.productImage,
+                            shippingCost = product.shippingCost
                         )
                     )
                 }

@@ -5,5 +5,6 @@ data class SelectedProduct(
     val name: String,
     val unitPrice: Double,
     val quantity: Int,
-    val imageRes: Int
+    val imageRes: Int,
+    val shippingCost: Double = 0.0
 )

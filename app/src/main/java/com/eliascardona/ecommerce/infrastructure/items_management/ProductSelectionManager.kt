@@ -49,6 +49,12 @@ object ProductSelectionManager {
         _selection.value = current
     }
 
+    fun deleteProduct(productId: String) {
+        val current = _selection.value.toMutableMap()
+        current.remove(productId)
+        _selection.value = current
+    }
+
     fun clearSelection() {
         _selection.value = emptyMap()
     }

@@ -6,9 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.R
 import com.eliascardona.ecommerce.components.features.product.FeaturedProductCard
-import com.eliascardona.ecommerce.infrastructure.data.ProductItemForCard
+import com.eliascardona.ecommerce.infrastructure.data.ProductEntity
 
-val featuredLaptop = ProductItemForCard(
+val featuredLaptop = ProductEntity(
     "123",
     "Laptop Pro 15",
     R.drawable.shoe1,

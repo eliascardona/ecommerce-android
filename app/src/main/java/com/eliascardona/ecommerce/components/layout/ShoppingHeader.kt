@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,12 +31,9 @@ fun ShoppingHeader(
     onNavigateToCart: () -> Unit,
     onNavigateToCheckout: () -> Unit
 ) {
-    val selection by ProductSelectionManager
-        .selection
-        .collectAsState()
-
-    val selectedProducts =
-        selection.values.toList()
+    val selection by ProductSelectionManager.selection.collectAsState()
+    val cartItems = selection.values.toList()
+    val totalQuantity = cartItems.sumOf { it.quantity }
 
     var showCartDialog by remember {
         mutableStateOf(false)
@@ -59,17 +58,27 @@ fun ShoppingHeader(
         IconButton(
             onClick = { showCartDialog = true }
         ) {
-            Icon(
-                imageVector = Icons.Default.ShoppingCart,
-                contentDescription = "Shopping cart",
-                modifier = Modifier.size(28.dp)
-            )
+            BadgedBox(
+                badge = {
+                    if (totalQuantity > 0) {
+                        Badge {
+                            Text(text = totalQuantity.toString())
+                        }
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Shopping cart",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
     }
 
     if (showCartDialog) {
         CartPreviewDialog(
-            products = selectedProducts,
+            products = cartItems,
             onDismiss = {
                 showCartDialog = false
             },

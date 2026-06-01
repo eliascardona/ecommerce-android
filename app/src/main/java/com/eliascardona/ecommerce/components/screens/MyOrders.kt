@@ -1,59 +1,34 @@
 package com.eliascardona.ecommerce.components.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.layout.generic.GenericScreenHeader
 import com.eliascardona.ecommerce.components.shared.card.GenericCard
 import com.eliascardona.ecommerce.infrastructure.data.Order
 import com.eliascardona.ecommerce.infrastructure.data.OrderItem
+import com.eliascardona.ecommerce.infrastructure.data.OrderManager
 
-// STATIC DATA
-val sampleOrders = listOf(
-    Order(
-        id = "ORD001",
-        date = "14 de enero de 2024",
-        status = "Delivered",
-        items = listOf(
-            OrderItem("Classic White Sneakers", 1, "$89.99"),
-            OrderItem("Leather Crossbody Bag", 1, "$129.99")
-        ),
-        total = "$219.98"
-    ),
-    Order(
-        id = "ORD002",
-        date = "9 de enero de 2024",
-        status = "Shipped",
-        items = listOf(
-            OrderItem("Denim Jacket", 1, "$79.99")
-        ),
-        total = "$79.99"
-    ),
-    Order(
-        id = "ORD003",
-        date = "4 de enero de 2024",
-        status = "Processing",
-        items = listOf(
-            OrderItem("Cotton T-Shirt", 2, "$19.99")
-        ),
-        total = "$39.98"
-    )
-)
-
-// SCREEN
 @Composable
 fun MyOrders(
     onNavigateBackward: () -> Unit
 ) {
+    val orders by OrderManager.orders.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,10 +38,31 @@ fun MyOrders(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Orders list
-        sampleOrders.forEach {
-            OrderCard(it)
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "My Orders",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (orders.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("You haven't placed any orders yet.", color = Color.Gray)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(bottom = 16.dp)
+            ) {
+                items(orders) { order ->
+                    OrderCard(order)
+                }
+            }
         }
     }
 }
@@ -74,21 +70,24 @@ fun MyOrders(
 @Composable
 fun OrderCard(order: Order) {
     GenericCard {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-
             // Header row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Order #${order.id}")
-                    Text(order.date, color = Color.Gray)
+                    Text(
+                        text = "Order #${order.id}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(order.date, color = Color.Gray, style = MaterialTheme.typography.bodySmall)
                 }
 
                 StatusBadge(order.status)
@@ -102,14 +101,14 @@ fun OrderCard(order: Order) {
 
                 if (index < order.items.size - 1) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Divider()
+                    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.5f))
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Divider()
+            HorizontalDivider()
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -118,8 +117,13 @@ fun OrderCard(order: Order) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Total", color = Color.Gray)
-                Text(order.total, style = MaterialTheme.typography.titleMedium)
+                Text("Total", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = order.total,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -129,7 +133,7 @@ fun OrderCard(order: Order) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 ActionPillButton(
-                    text = "Track Order",
+                    text = "Track",
                     icon = Icons.Default.LocationOn,
                     backgroundColor = Color(0xFFE3F2FD),
                     contentColor = Color(0xFF1976D2)
@@ -150,23 +154,24 @@ fun OrderCard(order: Order) {
 fun OrderItemRow(item: OrderItem) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(item.name)
-            Text("Qty: ${item.quantity}", color = Color.Gray)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(item.name, style = MaterialTheme.typography.bodyMedium)
+            Text("Qty: ${item.quantity}", color = Color.Gray, style = MaterialTheme.typography.bodySmall)
         }
 
-        Text(item.price)
+        Text(item.price, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
     }
 }
 
 @Composable
 fun StatusBadge(status: String) {
-
     val (bgColor, textColor) = when (status) {
         "Delivered" -> Color(0xFFE8F5E9) to Color(0xFF2E7D32)
         "Shipped" -> Color(0xFFE3F2FD) to Color(0xFF1976D2)
+        "Processing" -> Color(0xFFFFF3E0) to Color(0xFFE65100)
         else -> Color(0xFFEDE7F6) to Color(0xFF5E35B1)
     }
 
@@ -177,6 +182,7 @@ fun StatusBadge(status: String) {
         Text(
             text = status,
             color = textColor,
+            style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
         )
     }
@@ -191,15 +197,16 @@ fun ActionPillButton(
 ) {
     Surface(
         shape = RoundedCornerShape(24.dp),
-        color = backgroundColor
+        color = backgroundColor,
+        modifier = Modifier.height(36.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            modifier = Modifier.padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = text, tint = contentColor)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text, color = contentColor)
+            Icon(icon, contentDescription = text, tint = contentColor, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(text, color = contentColor, style = MaterialTheme.typography.labelLarge)
         }
     }
 }

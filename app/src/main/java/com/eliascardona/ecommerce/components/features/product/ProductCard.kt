@@ -20,11 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.shared.card.GenericCard
-import com.eliascardona.ecommerce.infrastructure.data.ProductItemForCard
+import com.eliascardona.ecommerce.infrastructure.data.ProductEntity
 
 @Composable
 fun ProductCard(
-    product: ProductItemForCard,
+    product: ProductEntity,
     onProductItemClick: () -> Unit,
     onAddItemToShoppingCart: () -> Unit
 ) {
@@ -47,7 +47,7 @@ fun ProductCard(
 
 @Composable
 fun ProductCardContent(
-    product: ProductItemForCard,
+    product: ProductEntity,
     onAddItemToShoppingCart: () -> Unit
 ) {
     Column(
@@ -94,7 +94,7 @@ fun ProductCardContent(
 
 @Composable
 fun FeaturedProductCard(
-    productItemForCard: ProductItemForCard,
+    productItemForCard: ProductEntity,
     onProductItemClick: () -> Unit
 ) {
     Box(
@@ -111,7 +111,7 @@ fun FeaturedProductCard(
 
 @Composable
 fun FeaturedProductContent(
-    product: ProductItemForCard
+    product: ProductEntity
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
