@@ -10,7 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -27,42 +28,25 @@ fun CartPreviewDialog(
     onNavigateToCart: () -> Unit,
     onNavigateToCheckout: () -> Unit
 ) {
-
     AlertDialog(
-
         onDismissRequest = onDismiss,
-
-        title = {
-            Text("Shopping Cart")
-        },
-
+        title = { Text("Shopping Cart") },
         text = {
-
             Column {
-
                 if (products.isEmpty()) {
-
                     Text(
                         text = "No products added yet.",
-                        style =
-                            MaterialTheme
-                                .typography
-                                .bodyMedium
+                        style = MaterialTheme.typography.bodyMedium
                     )
-
                 } else {
-
                     LazyColumn {
-
                         items(products) { product ->
-
                             CartPreviewItem(product)
 
-                            Divider(
-                                modifier =
-                                    Modifier.padding(
-                                        vertical = 8.dp
-                                    )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                thickness = DividerDefaults.Thickness,
+                                color = DividerDefaults.color
                             )
                         }
                     }
@@ -72,44 +56,27 @@ fun CartPreviewDialog(
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-
-                    verticalArrangement =
-                        Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-
                     OutlinedButton(
-                        modifier =
-                            Modifier.fillMaxWidth(),
-
-                        onClick =
-                            onNavigateToCart
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onNavigateToCart
                     ) {
-
                         Text("View Cart")
                     }
 
                     Button(
-                        modifier =
-                            Modifier.fillMaxWidth(),
-
-                        onClick =
-                            onNavigateToCheckout
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onNavigateToCheckout
                     ) {
-
                         Text("Proceed to Checkout")
                     }
                 }
             }
         },
-
         confirmButton = {},
-
         dismissButton = {
-
-            TextButton(
-                onClick = onDismiss
-            ) {
-
+            TextButton(onClick = onDismiss) {
                 Text("Close")
             }
         }

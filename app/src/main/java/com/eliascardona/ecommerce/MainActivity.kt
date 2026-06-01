@@ -103,7 +103,7 @@ fun ECommerceApp(
         ) {
             composable("home") {
                 HomeScreen(
-                    onProductItemClick = {
+                    onNavigateToProductDetails = {
                         navController.navigate("product_details") { launchSingleTop = true }
                     }
                 )

@@ -26,9 +26,8 @@ val sampleCartItems = listOf(
     CartItem(
         "Nike Air Max 270",
         "US 9",
-        "$159.99",
+        15.99,
         1,
-        R.drawable.shoe1
     )
 )
 
@@ -80,8 +79,8 @@ fun CartItemCard(item: CartItem) {
         ) {
 
             Image(
-                painter = painterResource(id = item.image),
-                contentDescription = item.productName,
+                painter = painterResource(id = R.drawable.shoe1),
+                contentDescription = item.name,
                 modifier = Modifier.size(100.dp)
             )
 
@@ -95,7 +94,7 @@ fun CartItemCard(item: CartItem) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(item.productName)
+                    Text(item.name)
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
@@ -103,10 +102,10 @@ fun CartItemCard(item: CartItem) {
                     )
                 }
 
-                Text("Size: ${item.size}", color = Color.Gray)
+                Text("Quantity: ${item.quantity}", color = Color.Gray)
 
                 Text(
-                    item.price,
+                    "$${item.unitPrice}",
                     color = MaterialTheme.colorScheme.primary
                 )
 

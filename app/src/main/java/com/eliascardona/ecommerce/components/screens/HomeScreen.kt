@@ -8,12 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.features.product.ProductCardCarousel
 import com.eliascardona.ecommerce.components.features.product.sampleProducts
-import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
-import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 
 @Composable
 fun HomeScreen(
-    onProductItemClick: () -> Unit
+    onNavigateToProductDetails: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -29,19 +27,7 @@ fun HomeScreen(
 
         ProductCardCarousel(
             products = sampleProducts,
-            onProductItemClick = { product ->
-
-                ProductSelectionManager.addProduct(
-
-                    SelectedProduct(
-                        productId = product.productId,
-                        name = product.productName,
-                        unitPrice = product.productPrice,
-                        quantity = 1,
-                        imageRes = product.productImage
-                    )
-                )
-            }
+            onNavigateToProductDetails = onNavigateToProductDetails
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -55,19 +41,7 @@ fun HomeScreen(
 
         ProductCardCarousel(
             products = sampleProducts,
-            onProductItemClick = { product ->
-
-                ProductSelectionManager.addProduct(
-
-                    SelectedProduct(
-                        productId = product.productId,
-                        name = product.productName,
-                        unitPrice = product.productPrice,
-                        quantity = 1,
-                        imageRes = product.productImage
-                    )
-                )
-            }
+            onNavigateToProductDetails = onNavigateToProductDetails
         )
         /* End of custom components */
     }

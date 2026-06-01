@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +25,9 @@ import com.eliascardona.ecommerce.infrastructure.data.ProductItemForCard
 @Composable
 fun ProductCard(
     product: ProductItemForCard,
-    onProductItemClick: () -> Unit
+    onProductItemClick: () -> Unit,
+    onAddItemToShoppingCart: () -> Unit
 ) {
-
     Box(
         modifier = Modifier
             .width(180.dp)
@@ -35,25 +36,25 @@ fun ProductCard(
                 onProductItemClick()
             }
     ) {
-
         GenericCard {
-            ProductCardContent(product)
+            ProductCardContent(
+                product = product,
+                onAddItemToShoppingCart = onAddItemToShoppingCart
+            )
         }
     }
 }
 
 @Composable
 fun ProductCardContent(
-    product: ProductItemForCard
+    product: ProductItemForCard,
+    onAddItemToShoppingCart: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-
         horizontalAlignment = Alignment.CenterHorizontally,
-
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -76,6 +77,18 @@ fun ProductCardContent(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onAddItemToShoppingCart
+            ) {
+                Text("Proceed to Checkout")
+            }
+        }
     }
 }
 

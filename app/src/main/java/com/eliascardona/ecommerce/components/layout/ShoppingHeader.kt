@@ -1,26 +1,16 @@
 package com.eliascardona.ecommerce.components.layout
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,8 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.eliascardona.ecommerce.components.features.shopping_cart.CartPreviewDialog
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
-import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 
 @Composable
 fun ShoppingHeader(
@@ -39,7 +29,6 @@ fun ShoppingHeader(
     onNavigateToCart: () -> Unit,
     onNavigateToCheckout: () -> Unit
 ) {
-
     val selection by ProductSelectionManager
         .selection
         .collectAsState()
@@ -58,12 +47,8 @@ fun ShoppingHeader(
                 horizontal = 16.dp,
                 vertical = 12.dp
             ),
-
-        horizontalArrangement =
-            Arrangement.SpaceBetween,
-
-        verticalAlignment =
-            Alignment.CenterVertically
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
@@ -72,11 +57,8 @@ fun ShoppingHeader(
         )
 
         IconButton(
-            onClick = {
-                showCartDialog = true
-            }
+            onClick = { showCartDialog = true }
         ) {
-
             Icon(
                 imageVector = Icons.Default.ShoppingCart,
                 contentDescription = "Shopping cart",
@@ -86,25 +68,17 @@ fun ShoppingHeader(
     }
 
     if (showCartDialog) {
-
         CartPreviewDialog(
             products = selectedProducts,
-
             onDismiss = {
                 showCartDialog = false
             },
-
             onNavigateToCart = {
-
                 showCartDialog = false
-
                 onNavigateToCart()
             },
-
             onNavigateToCheckout = {
-
                 showCartDialog = false
-
                 onNavigateToCheckout()
             }
         )

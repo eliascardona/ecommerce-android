@@ -10,20 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.infrastructure.data.ProductItemForCard
+import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
+import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 
 @Composable
 fun ProductCardCarousel(
     products: List<ProductItemForCard>,
-    onProductItemClick: (ProductItemForCard) -> Unit
+    onNavigateToProductDetails: () -> Unit
 ) {
 
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(240.dp),
-
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
 
@@ -31,8 +31,18 @@ fun ProductCardCarousel(
 
             ProductCard(
                 product = product,
-                onProductItemClick = {
-                    onProductItemClick(product)
+                onProductItemClick = onNavigateToProductDetails,
+                onAddItemToShoppingCart = {
+                    ProductSelectionManager.addProduct(
+
+                        SelectedProduct(
+                            productId = product.productId,
+                            name = product.productName,
+                            unitPrice = product.productPrice,
+                            quantity = 1,
+                            imageRes = product.productImage
+                        )
+                    )
                 }
             )
         }

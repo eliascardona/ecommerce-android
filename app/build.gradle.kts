@@ -60,8 +60,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.runtime)
 
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
+    implementation("com.google.code.gson:gson:2.14.0")
+    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
 
@@ -73,7 +73,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.process)
