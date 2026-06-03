@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.features.product.ProductCardCarousel
 import com.eliascardona.ecommerce.components.features.product.sampleProducts
+import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
 
 @Composable
 fun HomeScreen(
@@ -27,7 +28,10 @@ fun HomeScreen(
 
         ProductCardCarousel(
             products = sampleProducts,
-            onNavigateToProductDetails = onNavigateToProductDetails
+            onNavigateToProductDetails = { product ->
+                ProductDetailsManager.setProductDetails(product)
+                onNavigateToProductDetails()
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -41,7 +45,10 @@ fun HomeScreen(
 
         ProductCardCarousel(
             products = sampleProducts,
-            onNavigateToProductDetails = onNavigateToProductDetails
+            onNavigateToProductDetails = { product ->
+                ProductDetailsManager.setProductDetails(product)
+                onNavigateToProductDetails()
+            }
         )
         /* End of custom components */
     }

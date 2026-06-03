@@ -8,11 +8,11 @@ import com.eliascardona.ecommerce.R
 import com.eliascardona.ecommerce.components.features.product.FeaturedProductCard
 import com.eliascardona.ecommerce.infrastructure.data.ProductEntity
 
-val featuredLaptop = ProductEntity(
-    "123",
-    "Laptop Pro 15",
+val featuredProduct = ProductEntity(
+    "feat_shoe",
+    "Featured shoe",
     R.drawable.shoe1,
-    12.00
+    65.0
 )
 
 @Composable
@@ -24,19 +24,6 @@ fun Featured(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SectionHeader("Sample products carousel")
-
-        /*
-            Featured product goes here
-        */
-        Spacer(modifier = Modifier.height(16.dp))
-        FeaturedProductCard(
-            productItemForCard = featuredLaptop,
-            onProductItemClick = onProductItemClick
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         SectionHeader("Featured product")
 
         /*
@@ -44,20 +31,8 @@ fun Featured(
         */
         Spacer(modifier = Modifier.height(16.dp))
         FeaturedProductCard(
-            productItemForCard = featuredLaptop,
+            product = featuredProduct,
             onProductItemClick = onProductItemClick
         )
-
-        SectionHeader("Featured product")
-
-        /*
-            Featured product goes here
-        */
-        Spacer(modifier = Modifier.height(16.dp))
-        FeaturedProductCard(
-            productItemForCard = featuredLaptop,
-            onProductItemClick = onProductItemClick
-        )
-        /* End of custom components */
     }
 }

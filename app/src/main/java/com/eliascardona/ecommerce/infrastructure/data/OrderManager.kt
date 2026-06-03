@@ -10,7 +10,7 @@ import java.util.Locale
 
 object OrderManager {
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
-    val orders: StateFlow<List<Order>> = _orders.asStateFlow()
+//    val orders: StateFlow<List<Order>> = _orders.asStateFlow()
 
     fun placeOrder(items: List<OrderItem>, total: String) {
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
@@ -22,5 +22,9 @@ object OrderManager {
             total = total
         )
         _orders.value = listOf(newOrder) + _orders.value
+    }
+
+    fun snapshot(): List<Order> {
+        return _orders.value.toList()
     }
 }

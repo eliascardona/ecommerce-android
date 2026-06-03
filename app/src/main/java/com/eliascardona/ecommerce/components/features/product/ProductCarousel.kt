@@ -16,7 +16,7 @@ import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduc
 @Composable
 fun ProductCardCarousel(
     products: List<ProductEntity>,
-    onNavigateToProductDetails: () -> Unit
+    onNavigateToProductDetails: (product: SelectedProduct) -> Unit
 ) {
 
     LazyRow(
@@ -28,22 +28,22 @@ fun ProductCardCarousel(
     ) {
 
         items(products) { product ->
+            val selectedProduct = SelectedProduct(
+                productId = product.productId,
+                name = product.productName,
+                unitPrice = product.productPrice,
+                quantity = 1,
+                imageRes = product.productImage,
+                shippingCost = product.shippingCost
+            )
 
             ProductCard(
                 product = product,
-                onProductItemClick = onNavigateToProductDetails,
+                onProductItemClick = {
+                    onNavigateToProductDetails(selectedProduct)
+                },
                 onAddItemToShoppingCart = {
-                    ProductSelectionManager.addProduct(
-
-                        SelectedProduct(
-                            productId = product.productId,
-                            name = product.productName,
-                            unitPrice = product.productPrice,
-                            quantity = 1,
-                            imageRes = product.productImage,
-                            shippingCost = product.shippingCost
-                        )
-                    )
+                    ProductSelectionManager.addProduct(selectedProduct)
                 }
             )
         }

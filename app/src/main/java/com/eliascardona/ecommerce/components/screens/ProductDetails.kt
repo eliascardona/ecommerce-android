@@ -2,7 +2,6 @@ package com.eliascardona.ecommerce.components.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -20,30 +19,78 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.R
+import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
+import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
+import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 
-// -----------------------------
-// SCREEN
-// -----------------------------
 @Composable
 fun ProductDetails(
-    onAddToCart: () -> Unit,
     onNavigateBackward: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
         ProductImageHeader(onNavigateBackward = onNavigateBackward)
-
         ProductDetailsBody()
-
-        ProductBottomBar(onAddToCart = onAddToCart)
     }
 }
 
-// -----------------------------
-// HEADER (IMAGE + ACTIONS)
-// -----------------------------
+@Composable
+fun ProductDetailsBody() {
+    val productDetails = ProductDetailsManager.getProductDetails()
+
+    val addToCart = {
+        val selectedProduct = SelectedProduct(
+            productId = productDetails?.productId ?: "",
+            name = productDetails?.name ?: "",
+            unitPrice = productDetails?.unitPrice ?: 65.0,
+            quantity = 1,
+            imageRes = productDetails?.imageRes ?: 1,
+            shippingCost = productDetails?.shippingCost ?: 10.0
+        )
+
+        ProductSelectionManager.addProduct(selectedProduct)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Details",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
+
+        if (productDetails != null) {
+            Text(
+                text = productDetails.name,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("⭐ 4", color = Color(0xFFFFC107))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("(28 reviews)", color = Color.Gray)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            AddToCartButton(
+                productDetails = productDetails,
+                onAddToCart = addToCart
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
 @Composable
 fun ProductImageHeader(
     onNavigateBackward: () -> Unit
@@ -70,7 +117,7 @@ fun ProductImageHeader(
 
             CircleIconButton(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                boxModifier = Modifier.clickable(
+                modifier = Modifier.clickable(
                     true,
                     null,
                     null,
@@ -88,7 +135,7 @@ fun ProductImageHeader(
 }
 
 @Composable
-fun CircleIconButton(icon: ImageVector, boxModifier: Modifier = Modifier) {
+fun CircleIconButton(icon: ImageVector, modifier: Modifier = Modifier) {
     Surface(
         shape = CircleShape,
         color = Color.White,
@@ -96,7 +143,7 @@ fun CircleIconButton(icon: ImageVector, boxModifier: Modifier = Modifier) {
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = boxModifier
+            modifier = modifier
         ) {
             Icon(
                 imageVector = icon,
@@ -106,130 +153,9 @@ fun CircleIconButton(icon: ImageVector, boxModifier: Modifier = Modifier) {
     }
 }
 
-// -----------------------------
-// BODY
-// -----------------------------
 @Composable
-fun ProductDetailsBody() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-
-        IndicatorDots()
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = "Nike",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
-        )
-
-        Text(
-            text = "Nike Air Max 270",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("⭐ 4.5", color = Color(0xFFFFC107))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("(128 reviews)", color = Color.Gray)
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = "$159.99",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Divider()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Select Size",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        SizeSelector()
-    }
-}
-
-// -----------------------------
-// INDICATOR DOTS
-// -----------------------------
-@Composable
-fun IndicatorDots() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        repeat(3) { index ->
-            val color = if (index == 0) Color.Blue else Color.LightGray
-
-            Box(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .size(8.dp)
-                    .background(color, CircleShape)
-            )
-        }
-    }
-}
-
-// -----------------------------
-// SIZE SELECTOR
-// -----------------------------
-@Composable
-fun SizeSelector() {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        SizeButton("US 7", selected = false)
-        SizeButton("US 8", selected = true)
-        SizeButton("US 9", selected = false)
-    }
-}
-
-@Composable
-fun SizeButton(text: String, selected: Boolean) {
-    val backgroundColor =
-        if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
-
-    val contentColor =
-        if (selected) MaterialTheme.colorScheme.onPrimary else Color.Black
-
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = backgroundColor,
-        modifier = Modifier
-            .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 12.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = text, color = contentColor)
-        }
-    }
-}
-
-// -----------------------------
-// BOTTOM BAR
-// -----------------------------
-@Composable
-fun ProductBottomBar(
+fun AddToCartButton(
+    productDetails: SelectedProduct,
     onAddToCart: () -> Unit
 ) {
     Row(
@@ -241,10 +167,10 @@ fun ProductBottomBar(
     ) {
 
         Column {
-            Text("Total:", color = Color.Gray)
             Text(
-                "$159.99",
-                style = MaterialTheme.typography.titleLarge
+                text = "$${productDetails.unitPrice}",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -255,7 +181,7 @@ fun ProductBottomBar(
                 .height(56.dp)
                 .width(180.dp)
         ) {
-            Text("Add to Cart")
+            Text("Add to cart")
         }
     }
 }

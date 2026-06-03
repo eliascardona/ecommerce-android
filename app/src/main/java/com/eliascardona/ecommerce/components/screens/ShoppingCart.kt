@@ -12,8 +12,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +28,7 @@ import java.util.Locale
 fun ShoppingCart(
     onNavigateToCheckout: () -> Unit
 ) {
-    val selection by ProductSelectionManager.selection.collectAsState()
-    val cartItems = selection.values.toList()
+    val cartItems = ProductSelectionManager.snapshot()
 
     val subtotal = cartItems.sumOf { it.unitPrice * it.quantity }
     val shipping = cartItems.sumOf { it.shippingCost * it.quantity }

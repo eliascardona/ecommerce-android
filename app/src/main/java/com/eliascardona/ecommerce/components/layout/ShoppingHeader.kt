@@ -31,8 +31,7 @@ fun ShoppingHeader(
     onNavigateToCart: () -> Unit,
     onNavigateToCheckout: () -> Unit
 ) {
-    val selection by ProductSelectionManager.selection.collectAsState()
-    val cartItems = selection.values.toList()
+    val cartItems = ProductSelectionManager.snapshot()
     val totalQuantity = cartItems.sumOf { it.quantity }
 
     var showCartDialog by remember {

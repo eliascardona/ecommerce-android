@@ -86,7 +86,7 @@ fun ProductCardContent(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = onAddItemToShoppingCart
             ) {
-                Text("Proceed to Checkout")
+                Text("Add to cart")
             }
         }
     }
@@ -94,7 +94,7 @@ fun ProductCardContent(
 
 @Composable
 fun FeaturedProductCard(
-    productItemForCard: ProductEntity,
+    product: ProductEntity,
     onProductItemClick: () -> Unit
 ) {
     Box(
@@ -104,7 +104,7 @@ fun FeaturedProductCard(
             .clickable(true, null, null, onProductItemClick)
     ) {
         GenericCard {
-            FeaturedProductContent(product = productItemForCard)
+            FeaturedProductContent(product = product)
         }
     }
 }
@@ -133,7 +133,7 @@ fun FeaturedProductContent(
         )
 
         Text(
-            text = "$ 99.99",
+            text = "$${product.productPrice}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )

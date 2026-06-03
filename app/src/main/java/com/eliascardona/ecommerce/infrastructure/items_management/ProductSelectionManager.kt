@@ -5,12 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object ProductSelectionManager {
-
     private val _selection =
         MutableStateFlow<Map<String, SelectedProduct>>(emptyMap())
-
-    val selection: StateFlow<Map<String, SelectedProduct>> =
-        _selection.asStateFlow()
 
     fun addProduct(product: SelectedProduct) {
 

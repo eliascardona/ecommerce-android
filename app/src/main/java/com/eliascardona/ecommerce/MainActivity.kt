@@ -1,10 +1,8 @@
 package com.eliascardona.ecommerce
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,9 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,7 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.eliascardona.ecommerce.components.layout.ShoppingHeader
 import com.eliascardona.ecommerce.components.screens.Account
 import com.eliascardona.ecommerce.ui.theme.EcommerceTheme
-import com.eliascardona.ecommerce.components.screens.CheckoutForm
+import com.eliascardona.ecommerce.components.screens.CheckoutScreen
 import com.eliascardona.ecommerce.components.screens.Featured
 import com.eliascardona.ecommerce.components.screens.HomeScreen
 import com.eliascardona.ecommerce.components.screens.MyOrders
@@ -39,14 +34,23 @@ import com.eliascardona.ecommerce.components.screens.ProductDetails
 import com.eliascardona.ecommerce.components.screens.Settings
 import com.eliascardona.ecommerce.components.screens.ShoppingCart
 import com.eliascardona.ecommerce.components.shared.content_container.GenericContainer
-import com.eliascardona.ecommerce.domain.shopping_cart.ShoppingCartRepository
-import com.eliascardona.ecommerce.infrastructure.lifecycle.AppLifecycleObserver
+import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
+
+//import com.eliascardona.ecommerce.components.screens.SignInScreen
+//import com.eliascardona.ecommerce.components.screens.SignUpScreen
+//import com.google.firebase.Firebase
+//import com.google.firebase.auth.FirebaseAuth
+//import com.google.firebase.auth.auth
+//import com.google.firebase.firestore.FirebaseFirestore
+//import com.google.firebase.firestore.firestore
 
 class MainActivity : ComponentActivity() {
 //    val context = LocalContext.current
 //    val shoppingCartRepository = ShoppingCartRepository(context = context)
 
-    @RequiresApi(Build.VERSION_CODES.O)
+//    private lateint var auth: FirebaseAuth
+//    private lateint var firestore: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,6 +64,9 @@ class MainActivity : ComponentActivity() {
 //            .lifecycle
 //            .addObserver(observer)
 
+//        auth = Firebase.auth
+//        firestore = Firebase.firestore
+
         setContent {
             EcommerceTheme {
                 val navController = rememberNavController()
@@ -69,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         ShoppingHeader(
                             title = "E-Commerce",
                             onNavigateToCart = {
-                                navController.navigate("cart")
+                                navController.navigate("shopping_cart")
                             },
                             onNavigateToCheckout = {
                                 navController.navigate("checkout")
@@ -82,6 +89,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     ECommerceApp(
+//                        auth = auth,
+//                        firestore = firestore,
                         navController = navController,
                         innerPadding = innerPadding
                     )
@@ -93,6 +102,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ECommerceApp(
+//    auth: FirebaseAuth,
+//    firestore: FirebaseFirestore,
     navController: NavHostController,
     innerPadding: PaddingValues
 ) {
@@ -101,6 +112,23 @@ fun ECommerceApp(
             navController = navController,
             startDestination = "home"
         ) {
+//            composable("signUp") {
+//                SignUpScreen(
+//                    auth = auth,
+//                    firestoreDB = firestore,
+//                    navController = navController,
+//                    modifier = Modifier
+//                )
+//            }
+//
+//            composable("signIn") {
+//                SignInScreen(
+//                    auth = auth,
+//                    navController = navController,
+//                    modifier = Modifier
+//                )
+//            }
+
             composable("home") {
                 HomeScreen(
                     onNavigateToProductDetails = {
@@ -119,11 +147,9 @@ fun ECommerceApp(
 
             composable("product_details") {
                 ProductDetails(
-                    onAddToCart = {
-                        navController.navigate("shopping_cart") { launchSingleTop = true }
-                    },
                     onNavigateBackward = {
                         navController.navigate("home") { launchSingleTop = true }
+                        ProductDetailsManager.clearSelection()
                     }
                 )
             }
@@ -137,9 +163,9 @@ fun ECommerceApp(
             }
 
             composable("checkout") {
-                CheckoutForm(
-                    onPlaceOrder = {
-                        navController.navigate("my_orders") { launchSingleTop = true }
+                CheckoutScreen(
+                    onPlaceOrderNavigate = {
+                        navController.navigate("shopping_cart") { launchSingleTop = true }
                     },
                     onNavigateBackward = {
                         navController.navigate("shopping_cart") { launchSingleTop = true }

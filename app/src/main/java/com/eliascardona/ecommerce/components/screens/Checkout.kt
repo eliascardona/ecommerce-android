@@ -1,14 +1,14 @@
 package com.eliascardona.ecommerce.components.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,22 +21,39 @@ import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelecti
 import java.util.Locale
 
 @Composable
-fun CheckoutForm(
-    onPlaceOrder: () -> Unit,
+fun CheckoutScreen(
+    onPlaceOrderNavigate: () -> Unit,
     onNavigateBackward: () -> Unit
 ) {
-    val selection by ProductSelectionManager.selection.collectAsState()
-    val cartItems = selection.values.toList()
+    val cartItems = ProductSelectionManager.snapshot()
+    val scrollState = rememberScrollState()
 
     val subtotal = cartItems.sumOf { it.unitPrice * it.quantity }
     val shipping = cartItems.sumOf { it.shippingCost * it.quantity }
     val tax = subtotal * 0.10
     val total = subtotal + shipping + tax
 
+    val triggerPlaceOrder = {
+        val orderItems = cartItems.map {
+            OrderItem(
+                name = it.name,
+                quantity = it.quantity,
+                price = String.format(Locale.getDefault(), "$%.2f", it.unitPrice)
+            )
+        }
+        OrderManager.placeOrder(
+            items = orderItems,
+            total = String.format(Locale.getDefault(), "$%.2f", total)
+        )
+        ProductSelectionManager.clearSelection()
+        onPlaceOrderNavigate()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(scrollState)
     ) {
 
         GenericScreenHeader(onNavigateBackward = onNavigateBackward)
@@ -53,26 +70,15 @@ fun CheckoutForm(
 
         CheckoutSummaryCard(subtotal, shipping, tax, total)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         PlaceOrderButton(
             enabled = cartItems.isNotEmpty(),
-            onPlaceOrder = {
-                val orderItems = cartItems.map {
-                    OrderItem(
-                        name = it.name,
-                        quantity = it.quantity,
-                        price = String.format(Locale.getDefault(), "$%.2f", it.unitPrice)
-                    )
-                }
-                OrderManager.placeOrder(
-                    items = orderItems,
-                    total = String.format(Locale.getDefault(), "$%.2f", total)
-                )
-                ProductSelectionManager.clearSelection()
-                onPlaceOrder()
-            }
+            onPlaceOrder = triggerPlaceOrder
         )
+        
+        // Extra padding at the bottom for better reachability
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
