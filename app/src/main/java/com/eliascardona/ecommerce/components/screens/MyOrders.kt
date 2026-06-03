@@ -32,13 +32,16 @@ fun MyOrders(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        GenericScreenHeader(onNavigateBackward = onNavigateBackward)
-
+        GenericScreenHeader(
+            screenTitle = "My orders",
+            onNavigateBackward = onNavigateBackward
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "My Orders",
-            style = MaterialTheme.typography.headlineMedium,
+            text = "Check your recently orders",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
 

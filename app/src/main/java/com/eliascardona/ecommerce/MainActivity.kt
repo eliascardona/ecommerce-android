@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,23 +34,22 @@ import com.eliascardona.ecommerce.components.screens.MyOrders
 import com.eliascardona.ecommerce.components.screens.ProductDetails
 import com.eliascardona.ecommerce.components.screens.Settings
 import com.eliascardona.ecommerce.components.screens.ShoppingCart
+import com.eliascardona.ecommerce.components.screens.SignInScreen
+import com.eliascardona.ecommerce.components.screens.SignUpScreen
 import com.eliascardona.ecommerce.components.shared.content_container.GenericContainer
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
-
-//import com.eliascardona.ecommerce.components.screens.SignInScreen
-//import com.eliascardona.ecommerce.components.screens.SignUpScreen
-//import com.google.firebase.Firebase
-//import com.google.firebase.auth.FirebaseAuth
-//import com.google.firebase.auth.auth
-//import com.google.firebase.firestore.FirebaseFirestore
-//import com.google.firebase.firestore.firestore
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 class MainActivity : ComponentActivity() {
 //    val context = LocalContext.current
 //    val shoppingCartRepository = ShoppingCartRepository(context = context)
 
-//    private lateint var auth: FirebaseAuth
-//    private lateint var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +64,8 @@ class MainActivity : ComponentActivity() {
 //            .lifecycle
 //            .addObserver(observer)
 
-//        auth = Firebase.auth
-//        firestore = Firebase.firestore
+        auth = Firebase.auth
+        firestore = Firebase.firestore
 
         setContent {
             EcommerceTheme {
@@ -89,8 +89,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     ECommerceApp(
-//                        auth = auth,
-//                        firestore = firestore,
+                        auth = auth,
+                        firestore = firestore,
                         navController = navController,
                         innerPadding = innerPadding
                     )
@@ -102,8 +102,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ECommerceApp(
-//    auth: FirebaseAuth,
-//    firestore: FirebaseFirestore,
+    auth: FirebaseAuth,
+    firestore: FirebaseFirestore,
     navController: NavHostController,
     innerPadding: PaddingValues
 ) {
@@ -112,22 +112,22 @@ fun ECommerceApp(
             navController = navController,
             startDestination = "home"
         ) {
-//            composable("signUp") {
-//                SignUpScreen(
-//                    auth = auth,
-//                    firestoreDB = firestore,
-//                    navController = navController,
-//                    modifier = Modifier
-//                )
-//            }
-//
-//            composable("signIn") {
-//                SignInScreen(
-//                    auth = auth,
-//                    navController = navController,
-//                    modifier = Modifier
-//                )
-//            }
+            composable("signUp") {
+                SignUpScreen(
+                    auth = auth,
+                    firestoreDB = firestore,
+                    navController = navController,
+                    modifier = Modifier
+                )
+            }
+
+            composable("signIn") {
+                SignInScreen(
+                    auth = auth,
+                    navController = navController,
+                    modifier = Modifier
+                )
+            }
 
             composable("home") {
                 HomeScreen(
@@ -204,52 +204,48 @@ fun ECommerceApp(
     }
 }
 
+private data class BottomNavItem(
+    val route: String,
+    val label: String,
+    val icon: ImageVector
+)
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
-        "home",
-        "featured",
-        "account",
-        "shopping_cart"
+        BottomNavItem("home", "Home", Icons.Default.Home),
+        BottomNavItem("featured", "Featured", Icons.Default.Star),
+        BottomNavItem("shopping_cart", "Cart", Icons.Default.ShoppingCart),
+        BottomNavItem("account", "Account", Icons.Default.Person)
     )
 
     NavigationBar {
         val currentRoute =
             navController.currentBackStackEntryAsState().value?.destination?.route
 
-        items.forEach { screen ->
+        items.forEach { item ->
             NavigationBarItem(
-                selected = currentRoute == screen,
+                selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(screen) {
-
+                    navController.navigate(item.route) {
                         // Avoid building huge back stack
-                        popUpTo("home")
-
+                        popUpTo("home") {
+                            saveState = true
+                        }
                         launchSingleTop = true
                         restoreState = true
                     }
                 },
                 icon = {
                     Icon(
-                        imageVector = getIconForScreen(screen),
-                        contentDescription = "Clickable icon that navigates to $screen"
+                        imageVector = item.icon,
+                        contentDescription = "Clickable icon that navigates to ${item.label}"
                     )
                 },
                 label = {
-                    Text(screen)
+                    Text(text = item.label)
                 }
             )
         }
     }
-}
-
-
-fun getIconForScreen(screen: String) = when (screen) {
-    "home" -> Icons.Default.Home
-    "featured" -> Icons.Default.Star
-    "account" -> Icons.Default.Person
-    "shopping_cart" -> Icons.Default.ShoppingCart
-    else -> Icons.Default.Home
 }

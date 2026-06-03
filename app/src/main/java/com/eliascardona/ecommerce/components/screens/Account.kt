@@ -9,7 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,54 +17,106 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.eliascardona.ecommerce.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-// -----------------------------
-// SCREEN
-// -----------------------------
 @Composable
 fun Account(
+    auth: FirebaseAuth,
+    firestore: FirebaseFirestore,
+    navController: NavController,
     onNavigateToOrders: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    // State to observe the current authenticated user
+    var currentUser by remember { mutableStateOf(auth.currentUser) }
+    var userFullName by remember { mutableStateOf<String?>(null) }
 
-        ProfileHeader()
+    // Listener to update the state whenever the auth state changes (login/logout)
+    DisposableEffect(auth) {
+        val listener = FirebaseAuth.AuthStateListener {
+            currentUser = it.currentUser
+        }
+        auth.addAuthStateListener(listener)
+        onDispose {
+            auth.removeAuthStateListener(listener)
+        }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    // Fetch user details from Firestore when currentUser changes
+    LaunchedEffect(currentUser) {
+        val uid = currentUser?.uid
+        if (uid != null) {
+            firestore.collection("users").document(uid).get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        userFullName = document.getString("fullName")
+                    }
+                }
+        } else {
+            userFullName = null
+        }
+    }
 
-        ProfileStats()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        NavigationRow(
-            text = "My Orders",
-            icon = Icons.Default.ShoppingCart,
-            onClick = onNavigateToOrders
+    // If no user is logged in, show the SignUpScreen
+    if (currentUser == null) {
+        SignUpScreen(
+            auth = auth,
+            firestoreDB = firestore,
+            navController = navController
         )
+    } else {
+        // Main Account UI for logged-in users
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            ProfileHeader(
+                name = userFullName ?: "User Profile",
+                email = currentUser?.email ?: ""
+            )
 
-        NavigationRow(
-            text = "Settings",
-            icon = Icons.Default.Settings,
-            onClick = onNavigateToSettings
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileStats()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            NavigationRow(
+                text = "My Orders",
+                icon = Icons.Default.ShoppingCart,
+                onClick = onNavigateToOrders
+            )
+
+            NavigationRow(
+                text = "Settings",
+                icon = Icons.Default.Settings,
+                onClick = onNavigateToSettings
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Logout button
+            Button(
+                onClick = { auth.signOut() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text("Log out")
+            }
+        }
     }
 }
 
-// -----------------------------
-// HEADER
-// -----------------------------
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(name: String, email: String) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Box {
             Image(
                 painter = painterResource(id = R.drawable.shoe1),
@@ -74,7 +126,6 @@ fun ProfileHeader() {
                     .clip(CircleShape)
             )
 
-            // Small camera button (mock)
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -94,20 +145,17 @@ fun ProfileHeader() {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "John Doe",
+            text = name,
             style = MaterialTheme.typography.titleLarge
         )
 
         Text(
-            text = "john.doe@example.com",
+            text = email,
             color = Color.Gray
         )
     }
 }
 
-// -----------------------------
-// STATS
-// -----------------------------
 @Composable
 fun ProfileStats() {
     Row(
@@ -125,7 +173,6 @@ fun StatItem(value: String, label: String, icon: ImageVector) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -143,9 +190,6 @@ fun StatItem(value: String, label: String, icon: ImageVector) {
     }
 }
 
-// -----------------------------
-// NAVIGATION ROW
-// -----------------------------
 @Composable
 fun NavigationRow(
     text: String,
@@ -159,7 +203,6 @@ fun NavigationRow(
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Icon(icon, contentDescription = text)
 
         Spacer(modifier = Modifier.width(16.dp))

@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    id("com.google.gms.google-services") version "4.4.4" apply false
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -70,10 +70,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.process)
     ksp(libs.androidx.room.compiler)
 
-//    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
-//    implementation(libs.firebase.auth)
-//    implementation(libs.play.services.auth)
-//    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

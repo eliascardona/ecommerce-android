@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.layout.generic.GenericScreenHeader
 import com.eliascardona.ecommerce.components.shared.card.GenericCard
@@ -55,8 +56,16 @@ fun CheckoutScreen(
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
+        GenericScreenHeader(
+            screenTitle = "Checkout page",
+            onNavigateBackward = onNavigateBackward
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        GenericScreenHeader(onNavigateBackward = onNavigateBackward)
+        Text(
+            text = "Place your order",
+            style = MaterialTheme.typography.headlineMedium,
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

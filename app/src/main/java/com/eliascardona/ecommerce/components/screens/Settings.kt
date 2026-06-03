@@ -13,59 +13,39 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.layout.generic.GenericScreenHeader
 
-// -----------------------------
-// SCREEN
-// -----------------------------
 @Composable
 fun Settings(
     onNavigateBackward: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-        GenericScreenHeader(onNavigateBackward = onNavigateBackward)
-
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.titleLarge
+        GenericScreenHeader(
+            screenTitle = "Settings",
+            onNavigateBackward = onNavigateBackward
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // ACCOUNT
         SectionTitle("Account")
-
         NavigationRow("Edit Profile", Icons.Default.Person)
         NavigationRow("Security", Icons.Default.Warning)
         NavigationRow("Payment Methods", Icons.Default.AddCircle)
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
         // PREFERENCES
         SectionTitle("Preferences")
-
         ToggleRow("Push Notifications", Icons.Default.Notifications)
-        ToggleRow("Dark Mode", Icons.Default.ArrowDropDown)
         ToggleRow("Biometric Authentication", Icons.Default.Lock)
-        ToggleRow("Email Notifications", Icons.Default.Email)
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        // MORE
-        SectionTitle("More")
-
-        NavigationRow("Help & Support", Icons.Default.Info)
     }
 }
 
-
-// -----------------------------
-// SECTION TITLE
-// -----------------------------
 @Composable
 fun SectionTitle(text: String) {
     Text(
@@ -76,9 +56,6 @@ fun SectionTitle(text: String) {
     )
 }
 
-// -----------------------------
-// NAVIGATION ROW
-// -----------------------------
 @Composable
 fun NavigationRow(
     text: String,
@@ -109,9 +86,6 @@ fun NavigationRow(
     }
 }
 
-// -----------------------------
-// TOGGLE ROW
-// -----------------------------
 @Composable
 fun ToggleRow(
     text: String,

@@ -1,186 +1,173 @@
 package com.eliascardona.ecommerce.components.screens
-//
-//import androidx.activity.compose.rememberLauncherForActivityResult
-//import androidx.activity.result.contract.ActivityResultContracts
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.Spacer
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.height
-//import androidx.compose.foundation.layout.imePadding
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.material3.AlertDialog
-//import androidx.compose.material3.Button
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.TextField
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.res.stringResource
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.window.Dialog
-//import androidx.navigation.NavController
-//import com.google.android.gms.auth.api.signin.GoogleSignIn
-//import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-//import com.google.android.gms.common.api.ApiException
-//import com.google.firebase.auth.FirebaseAuth
-//import com.google.firebase.auth.GoogleAuthProvider
-//import com.eliascardona.ecommerce.R
-//
-//@Composable
-//fun SignInScreen(
-//    auth: FirebaseAuth,
-//    navController: NavController,
-//    modifier: Modifier = Modifier
-//) {
-//    val context = LocalContext.current
-//    val token = stringResource(R.string.default_web_client_id)
-//
-//    var currentUser by remember { mutableStateOf(auth.currentUser) }
-//
-//    var email by remember { mutableStateOf("") }
-//    var password by remember { mutableStateOf("") }
-//
-//    var showDialog by remember { mutableStateOf(false) }
-//    var message by remember { mutableStateOf("") }
-//
-//    val launcher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts
-//            .StartActivityForResult()
-//    ) { result ->
-//        val data = result.data
-//
-//        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//        val account = task.getResult(ApiException::class.java)
-//        val credential = GoogleAuthProvider.getCredential(
-//            account.idToken,
-//            null
-//        )
-//
-//        auth
-//            .signInWithCredential(credential)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    message = "You are about to login using Google, ok?"
-//
-//                    navController.navigate("home")
-//
-//                } else {
-//                    message = "An unexpected error occurred while trying to sign in with google"
-//                }
-//
-//                showDialog = true
-//                currentUser = auth.currentUser
-//            }
-//    }
-//
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp)
-//            .imePadding(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//    ) {
-//        Text(
-//            text = "Email",
-//            style = MaterialTheme.typography.titleLarge
-//        )
-//
-//        Spacer(Modifier.height(16.dp))
-//
-//        TextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            modifier = Modifier.fillMaxSize()
-//        )
-//
-//        Spacer(Modifier.height(16.dp))
-//
-//        TextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            modifier = Modifier.fillMaxSize()
-//        )
-//
-//        Spacer(Modifier.height(16.dp))
-//
-//        Button(
-//            onClick = {
-//                auth
-//                    .signInWithEmailAndPassword(email, password)
-//                    .addOnCompleteListener { task ->
-//                        message = if(task.isSuccessful) {
-//                            "You've successfully Signed Up!"
-//                        } else {
-//                            "An unexpected error occurred"
-//                        }
-//
-//                        showDialog = true
-//                    }
-//            }
-//        ) {
-//            Text("Sign in")
-//        }
-//
-//        Button(
-//            onClick = {
-//                val options = GoogleSignInOptions.Builder(
-//                    GoogleSignInOptions.DEFAULT_SIGN_IN
-//                )
-//                    .requestIdToken(token)
-//                    .requestEmail()
-//                    .build()
-//
-//                val googleSignInClient = GoogleSignIn.getClient(
-//                    context,
-//                    options
-//                )
-//
-//                launcher.launch(input = googleSignInClient.signInIntent)
-//            }
-//        ) {
-//            Text("Login using your Google Account")
-//        }
-//
-//        if (showDialog) {
-//            Dialog(
-//                onDismissRequest = { showDialog = false }
-//            ) {
-//                Text(message)
-//            }
-//        }
-//
-//        if (currentUser != null) {
-//            AlertDialog(
-//                onDismissRequest = { },
-//                title = { Text("Welcome user") },
-//                text = {
-//                    Text("User login")
-//                },
-//                confirmButton = {
-//                    Button(onClick = { }) {
-//                        Text("Confirm")
-//                    }
-//                },
-//                dismissButton = {
-//                    Button(onClick = {
-//                        showDialog = true
-//                        message = "User logout"
-//
-//                        auth.signOut()
-//                        currentUser = auth.currentUser
-//                    }) {
-//                        Text("Log out")
-//                    }
-//                }
-//            )
-//        }
-//    }
-//}
+
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.eliascardona.ecommerce.R
+import kotlinx.coroutines.delay
+
+@Composable
+fun SignInScreen(
+    auth: FirebaseAuth,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val token = stringResource(R.string.default_web_client_id)
+    val currentUser = auth.currentUser
+
+    if (currentUser != null) {
+        var countdown by remember { mutableIntStateOf(5) }
+        LaunchedEffect(Unit) {
+            while (countdown > 0) {
+                delay(1000L)
+                countdown--
+            }
+            navController.navigate("home") {
+                popUpTo("signIn") { inclusive = true }
+            }
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Active Session Detected",
+                        color = MaterialTheme.colorScheme.primaryContainer, // Darker similar to primary? Actually onPrimaryContainer is better.
+                        // I'll use a darker version of primary if possible, but let's stick to theme roles for simplicity or use a hardcoded color if needed.
+                        // The prompt says "color similar to primary but more darker".
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Redirecting you in $countdown seconds...",
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+        }
+    } else {
+        var email by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+
+        var showDialog by remember { mutableStateOf(false) }
+        var message by remember { mutableStateOf("") }
+
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val data = result.data
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+
+                auth.signInWithCredential(credential)
+                    .addOnCompleteListener { authTask ->
+                        if (authTask.isSuccessful) {
+                            navController.navigate("home")
+                        } else {
+                            message = "Google sign in failed"
+                            showDialog = true
+                        }
+                    }
+            } catch (e: ApiException) {
+                message = "Google API Error: ${e.message}"
+                showDialog = true
+            }
+        }
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .imePadding(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(text = "Email", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(8.dp))
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(text = "Password", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(8.dp))
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(24.dp))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                navController.navigate("home")
+                            } else {
+                                message = "Login failed: ${task.exception?.message}"
+                                showDialog = true
+                            }
+                        }
+                }
+            ) {
+                Text("Sign In")
+            }
+            Spacer(Modifier.height(8.dp))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(token)
+                        .requestEmail()
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(context, options)
+                    launcher.launch(googleSignInClient.signInIntent)
+                }
+            ) {
+                Text("Login with Google")
+            }
+
+            if (showDialog) {
+                Dialog(onDismissRequest = { showDialog = false }) {
+                    Card(modifier = Modifier.padding(16.dp)) {
+                        Text(modifier = Modifier.padding(16.dp), text = message)
+                    }
+                }
+            }
+        }
+    }
+}
