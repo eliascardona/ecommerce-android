@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.shared.card.GenericCard
+import com.eliascardona.ecommerce.components.shared.SummaryRow
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
 import com.eliascardona.ecommerce.infrastructure.items_management.SelectedProduct
 import java.util.Locale
@@ -28,7 +31,8 @@ import java.util.Locale
 fun ShoppingCart(
     onNavigateToCheckout: () -> Unit
 ) {
-    val cartItems = ProductSelectionManager.snapshot()
+    val selection by ProductSelectionManager.selection.collectAsState()
+    val cartItems = selection.values.toList()
 
     val subtotal = cartItems.sumOf { it.unitPrice * it.quantity }
     val shipping = cartItems.sumOf { it.shippingCost * it.quantity }
@@ -257,21 +261,5 @@ fun OrderSummaryCard(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun SummaryRow(
-    label: String,
-    value: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(label, color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
-        Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
     }
 }

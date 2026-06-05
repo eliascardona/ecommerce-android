@@ -7,50 +7,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.features.product.ProductCardCarousel
-import com.eliascardona.ecommerce.components.features.product.sampleProducts
+import com.eliascardona.ecommerce.infrastructure.data.ProductManager
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
 
 @Composable
 fun HomeScreen(
     onNavigateToProductDetails: () -> Unit
 ) {
+    val products = ProductManager.snapshot()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SectionHeader("Sample products carousel")
+        SectionHeader("Latest Products")
 
-        /*
-            Product carousel goes here
-        */
         Spacer(modifier = Modifier.height(16.dp))
 
-        ProductCardCarousel(
-            products = sampleProducts,
-            onNavigateToProductDetails = { product ->
-                ProductDetailsManager.setProductDetails(product)
-                onNavigateToProductDetails()
+        if (products.isEmpty()) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-        )
+        } else {
+            ProductCardCarousel(
+                products = products,
+                onNavigateToProductDetails = { product ->
+                    ProductDetailsManager.setProductDetails(product)
+                    onNavigateToProductDetails()
+                }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SectionHeader("Featured product")
+        SectionHeader("Featured Products")
 
-        /*
-            Product carousel goes here
-        */
         Spacer(modifier = Modifier.height(16.dp))
 
-        ProductCardCarousel(
-            products = sampleProducts,
-            onNavigateToProductDetails = { product ->
-                ProductDetailsManager.setProductDetails(product)
-                onNavigateToProductDetails()
+        if (products.isEmpty()) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-        )
-        /* End of custom components */
+        } else {
+            // For now, using the same list, but could be filtered for featured products
+            ProductCardCarousel(
+                products = products.reversed(),
+                onNavigateToProductDetails = { product ->
+                    ProductDetailsManager.setProductDetails(product)
+                    onNavigateToProductDetails()
+                }
+            )
+        }
     }
 }
 

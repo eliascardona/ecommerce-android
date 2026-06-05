@@ -9,13 +9,14 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eliascardona.ecommerce.components.layout.generic.GenericScreenHeader
 import com.eliascardona.ecommerce.components.shared.card.GenericCard
+import com.eliascardona.ecommerce.components.shared.SummaryRow
 import com.eliascardona.ecommerce.infrastructure.data.OrderItem
 import com.eliascardona.ecommerce.infrastructure.data.OrderManager
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
@@ -44,10 +45,15 @@ fun CheckoutScreen(
         }
         OrderManager.placeOrder(
             items = orderItems,
-            total = String.format(Locale.getDefault(), "$%.2f", total)
+            total = String.format(Locale.getDefault(), "$%.2f", total),
+            onSuccess = {
+                ProductSelectionManager.clearSelection()
+                onPlaceOrderNavigate()
+            },
+            onFailure = {
+                // In a real app, show a snackbar or toast
+            }
         )
-        ProductSelectionManager.clearSelection()
-        onPlaceOrderNavigate()
     }
 
     Column(
@@ -86,7 +92,6 @@ fun CheckoutScreen(
             onPlaceOrder = triggerPlaceOrder
         )
         
-        // Extra padding at the bottom for better reachability
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

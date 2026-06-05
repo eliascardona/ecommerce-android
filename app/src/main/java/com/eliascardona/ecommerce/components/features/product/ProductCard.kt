@@ -60,20 +60,20 @@ fun ProductCardContent(
 
         Image(
             painter = painterResource(id = product.productImage),
-            contentDescription = product.productName,
+            contentDescription = product.name,
             modifier = Modifier.size(100.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = product.productName,
+            text = product.name,
             style = MaterialTheme.typography.titleMedium,
             maxLines = 1
         )
 
         Text(
-            text = "$ ${product.productPrice}",
+            text = "$ ${product.price}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -120,20 +120,20 @@ fun FeaturedProductContent(
     ) {
         Image(
             painter = painterResource(id = product.productImage),
-            contentDescription = "Product image for ${product.productName}",
+            contentDescription = "Product image for ${product.name}",
             modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = product.productName,
+            text = product.name,
             style = MaterialTheme.typography.titleMedium,
             maxLines = 1
         )
 
         Text(
-            text = "$${product.productPrice}",
+            text = "$${product.price}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )

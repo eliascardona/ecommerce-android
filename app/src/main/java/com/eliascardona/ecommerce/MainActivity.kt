@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +38,8 @@ import com.eliascardona.ecommerce.components.screens.ShoppingCart
 import com.eliascardona.ecommerce.components.screens.SignInScreen
 import com.eliascardona.ecommerce.components.screens.SignUpScreen
 import com.eliascardona.ecommerce.components.shared.content_container.GenericContainer
+import com.eliascardona.ecommerce.domain.shopping_cart.ShoppingCartRepository
+import com.eliascardona.ecommerce.infrastructure.lifecycle.AppLifecycleObserver
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -45,24 +48,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
 class MainActivity : ComponentActivity() {
-//    val context = LocalContext.current
-//    val shoppingCartRepository = ShoppingCartRepository(context = context)
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var shoppingCartRepository: ShoppingCartRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val observer =
-//            AppLifecycleObserver(
-//                cartRepository = shoppingCartRepository
-//            )
-//
-//        ProcessLifecycleOwner
-//            .get()
-//            .lifecycle
-//            .addObserver(observer)
+        shoppingCartRepository = ShoppingCartRepository(context = this)
+
+        val observer = AppLifecycleObserver(cartRepository = shoppingCartRepository)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
 
         auth = Firebase.auth
         firestore = Firebase.firestore
@@ -183,6 +180,9 @@ fun ECommerceApp(
 
             composable("account") {
                 Account(
+                    auth = auth,
+                    firestore = firestore,
+                    navController = navController,
                     onNavigateToOrders = {
                         navController.navigate("my_orders") { launchSingleTop = true }
                     },

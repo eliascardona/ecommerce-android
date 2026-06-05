@@ -30,8 +30,8 @@ fun ProductCardCarousel(
         items(products) { product ->
             val selectedProduct = SelectedProduct(
                 productId = product.productId,
-                name = product.productName,
-                unitPrice = product.productPrice,
+                name = product.name,
+                unitPrice = product.price,
                 quantity = 1,
                 imageRes = product.productImage,
                 shippingCost = product.shippingCost

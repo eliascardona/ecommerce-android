@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +25,20 @@ import com.eliascardona.ecommerce.infrastructure.data.OrderManager
 fun MyOrders(
     onNavigateBackward: () -> Unit
 ) {
-    val orders = OrderManager.snapshot()
+    var orders by remember { mutableStateOf<List<Order>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        OrderManager.fetchOrders(
+            onSuccess = { fetchedOrders ->
+                orders = fetchedOrders
+                isLoading = false
+            },
+            onFailure = {
+                isLoading = false
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -39,7 +52,7 @@ fun MyOrders(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Check your recently orders",
+            text = "Check your recent orders",
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
@@ -47,7 +60,11 @@ fun MyOrders(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (orders.isEmpty()) {
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (orders.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -76,7 +93,6 @@ fun OrderCard(order: Order) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -96,7 +112,6 @@ fun OrderCard(order: Order) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Items
             order.items.forEachIndexed { index, item ->
                 OrderItemRow(item)
 
@@ -113,7 +128,6 @@ fun OrderCard(order: Order) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Total
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -129,7 +143,6 @@ fun OrderCard(order: Order) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Actions
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
