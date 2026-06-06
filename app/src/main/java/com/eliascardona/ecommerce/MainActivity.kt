@@ -39,7 +39,7 @@ import com.eliascardona.ecommerce.components.screens.SignInScreen
 import com.eliascardona.ecommerce.components.screens.SignUpScreen
 import com.eliascardona.ecommerce.components.shared.content_container.GenericContainer
 import com.eliascardona.ecommerce.domain.shopping_cart.ShoppingCartRepository
-import com.eliascardona.ecommerce.infrastructure.lifecycle.AppLifecycleObserver
+import com.eliascardona.ecommerce.infrastructure.android.AppLifecycleObserver
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductDetailsManager
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -56,13 +56,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shoppingCartRepository = ShoppingCartRepository(context = this)
-
-        val observer = AppLifecycleObserver(cartRepository = shoppingCartRepository)
-        ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
-
         auth = Firebase.auth
         firestore = Firebase.firestore
+
+        shoppingCartRepository = ShoppingCartRepository(context = this)
+
+        val observer = AppLifecycleObserver(
+            firestore = firestore,
+            cartRepository = shoppingCartRepository
+        )
+        ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
 
         setContent {
             EcommerceTheme {

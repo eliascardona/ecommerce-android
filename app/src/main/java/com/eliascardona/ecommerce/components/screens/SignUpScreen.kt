@@ -2,12 +2,16 @@ package com.eliascardona.ecommerce.components.screens
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
@@ -22,6 +26,7 @@ fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val scrollState = rememberScrollState()
     val currentUser = auth.currentUser
 
     if (currentUser != null) {
@@ -80,13 +85,19 @@ fun SignUpScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .imePadding(),
+                .imePadding()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+//            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
+                text = "Create an account",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Text(
                 text = "Full name",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(16.dp))
@@ -101,7 +112,7 @@ fun SignUpScreen(
 
             Text(
                 text = "Shipping address",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(16.dp))
@@ -116,7 +127,7 @@ fun SignUpScreen(
 
             Text(
                 text = "Email",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(16.dp))
@@ -131,7 +142,7 @@ fun SignUpScreen(
 
             Text(
                 text = "Password",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(16.dp))
@@ -145,7 +156,6 @@ fun SignUpScreen(
             Spacer(Modifier.height(24.dp))
 
             Button(
-                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     auth
                         .createUserWithEmailAndPassword(email, password)
@@ -184,6 +194,15 @@ fun SignUpScreen(
             ) {
                 Text("Sign up!")
             }
+
+            Text(
+                text = "Do you already have an account? Click here",
+                modifier = Modifier
+                    .clickable(onClick = {
+                        navController.navigate("signIn")
+                    }),
+                textDecoration = TextDecoration.Underline
+            )
 
             if (showDialog) {
                 Dialog(

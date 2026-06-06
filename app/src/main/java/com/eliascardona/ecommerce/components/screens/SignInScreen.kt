@@ -2,7 +2,10 @@ package com.eliascardona.ecommerce.components.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
@@ -28,6 +32,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
     val token = stringResource(R.string.default_web_client_id)
     val currentUser = auth.currentUser
 
@@ -59,9 +64,7 @@ fun SignInScreen(
                 ) {
                     Text(
                         text = "Active Session Detected",
-                        color = MaterialTheme.colorScheme.primaryContainer, // Darker similar to primary? Actually onPrimaryContainer is better.
-                        // I'll use a darker version of primary if possible, but let's stick to theme roles for simplicity or use a hardcoded color if needed.
-                        // The prompt says "color similar to primary but more darker".
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -110,26 +113,42 @@ fun SignInScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .imePadding(),
+                .imePadding()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+//            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Email", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "Log into your account",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Text(
+                text = "Email",
+                style = MaterialTheme.typography.bodyMedium
+            )
             Spacer(Modifier.height(8.dp))
+
             TextField(
                 value = email,
                 onValueChange = { email = it },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(16.dp))
-            Text(text = "Password", style = MaterialTheme.typography.titleLarge)
+
+            Text(
+                text = "Password",
+                style = MaterialTheme.typography.bodyMedium
+            )
             Spacer(Modifier.height(8.dp))
+
             TextField(
                 value = password,
                 onValueChange = { password = it },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(24.dp))
+
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -144,9 +163,11 @@ fun SignInScreen(
                         }
                 }
             ) {
-                Text("Sign In")
+                Text("Sign in")
             }
+
             Spacer(Modifier.height(8.dp))
+
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -158,8 +179,17 @@ fun SignInScreen(
                     launcher.launch(googleSignInClient.signInIntent)
                 }
             ) {
-                Text("Login with Google")
+                Text("Sign in with Google!")
             }
+
+            Text(
+                text = "Do you not have an account? Click here",
+                modifier = Modifier
+                    .clickable(onClick = {
+                        navController.navigate("signUp")
+                    }),
+                textDecoration = TextDecoration.Underline
+            )
 
             if (showDialog) {
                 Dialog(onDismissRequest = { showDialog = false }) {

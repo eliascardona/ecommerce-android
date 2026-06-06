@@ -1,26 +1,23 @@
-package com.eliascardona.ecommerce.infrastructure.lifecycle
+package com.eliascardona.ecommerce.infrastructure.android
 
-import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.eliascardona.ecommerce.components.features.product.sampleProducts
 import com.eliascardona.ecommerce.domain.shopping_cart.ShoppingCartRepository
-import com.eliascardona.ecommerce.infrastructure.data.ProductEntity
 import com.eliascardona.ecommerce.infrastructure.data.ProductManager
 import com.eliascardona.ecommerce.infrastructure.items_management.ProductSelectionManager
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AppLifecycleObserver(
+    private val firestore: FirebaseFirestore,
     private val cartRepository: ShoppingCartRepository
 ) : DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
-//        val db = Firebase.firestore
-//        db.collection("products")
+//        firestore.collection("products")
 //            .get()
 //            .addOnSuccessListener { result ->
 //                val products = result.mapNotNull { document ->
